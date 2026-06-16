@@ -12,128 +12,78 @@
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="Roma 2026">
-    <meta name="theme-color" content="#F7F6F2">
-<style>
+    <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { width: 100%; min-height: 100vh; overflow-x: hidden; }
+  html, body { width: 100%; min-height: 100vh; overflow-x: hidden; background: #F7F6F2; }
   body { 
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; 
-    background: #F7F6F2; 
-    color: #1E1E1E; 
-    padding: 12px; 
-    display: flex; 
-    flex-direction: column; 
-    height: auto; /* Cambiamos min-height por height: auto */
-    margin: 0; 
-}
+    color: #1E1E1E; padding: 12px; display: flex; flex-direction: column; 
+  }
+
   h1 { font-size: 20px; font-weight: 700; margin-bottom: 2px; }
-  .sub { font-size: 12px; color: #666; margin-bottom: 12px; max-width: 100%; }
-    * {
-    max-width: 100vw;
-    box-sizing: border-box;
-}
+  .sub { font-size: 12px; color: #666; margin-bottom: 12px; }
   hr { border: none; border-top: 1px solid #DEDCD5; margin-bottom: 12px; }
 
-.card { 
-    background: #fff; 
-    border: 1px solid #DEDCD5; 
-    border-radius: 12px; 
-    margin-bottom: 6px; /* Bajamos de 10px a 6px para que suba todo */
-    padding: 16px; 
-    display: flex; 
-    align-items: center; 
-    justify-content: space-between; 
-    font-size: 16px; 
-    cursor: pointer;
-}
-  .card-header { display: flex; align-items: center; gap: 8px; padding: 11px 14px; cursor: pointer; -webkit-tap-highlight-color: transparent; user-select: none; }
-  .badge { border-radius: 20px; padding: 3px 9px; font-size: 10px; font-weight: 700; white-space: nowrap; }
-  .b-llegada  { background:#E1F5EE; color:#0F6E56; }
-  .b-napoles  { background:#FAEEDA; color:#854F0B; }
-  .b-coliseo  { background:#EAF3DE; color:#3B6D11; }
-  .b-roma     { background:#EEEDFE; color:#3C3489; }
-  .b-vaticano { background:#FAECE7; color:#993C1D; }
-  .b-pompeya  { background:#FCEBEB; color:#A32D2D; }
-  .b-salida   { background:#E6F1FB; color:#185FA5; }
-  .b-consejos { background:#FFF3DC; color:#854F0B; }
-  .card-title { flex: 1; font-size: 13px; font-weight: 600; }
-  .card-date  { font-size: 11px; color: #888; white-space: nowrap; }
-  .chevron { font-size: 13px; color: #aaa; transition: transform .2s; margin-left: 4px; }
+  /* TARJETAS PRINCIPALES */
+  .card { background: #fff; border: 1px solid #DEDCD5; border-radius: 12px; margin-bottom: 8px; overflow: hidden; }
+  .card-header { 
+    display: flex; align-items: center; padding: 14px 16px; 
+    cursor: pointer; font-size: 16px; user-select: none;
+  }
+  .badge { border-radius: 20px; padding: 3px 9px; font-size: 10px; font-weight: 700; margin-right: 12px; white-space: nowrap; }
+  .card-title { font-size: 14px; font-weight: 600; color: #1E1E1E; }
+  
+  /* ESTA ES LA CLAVE PARA PEGAR LA FECHA A LA DERECHA */
+  .card-date { margin-left: auto; font-size: 12px; color: #888; margin-right: 10px; }
+  
+  .chevron { font-size: 14px; color: #aaa; transition: transform .2s; }
   .chevron.open { transform: rotate(90deg); }
 
-  .card-body { display: none; padding: 0 14px 12px; }
+  /* CUERPO Y SUB-ELEMENTOS */
+  .card-body { display: none; padding: 0 14px 16px; }
   .card-body.open { display: block; }
-
-  .sec { font-size: 9px; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: .07em; margin: 10px 0 5px; }
-  .item { display: flex; gap: 7px; align-items: flex-start; margin-bottom: 6px; }
-  .time { font-size: 11px; color: #aaa; min-width: 44px; padding-top: 2px; white-space: nowrap; }
+  .sec { font-size: 9px; font-weight: 700; color: #888; text-transform: uppercase; margin: 12px 0 6px; }
+  .item { display: flex; gap: 8px; align-items: flex-start; margin-bottom: 8px; font-size: 12px; }
+  .time { color: #aaa; min-width: 44px; }
   .dot { width: 7px; height: 7px; border-radius: 50%; margin-top: 4px; flex-shrink: 0; }
-  .d-blue   { background:#378ADD; } .d-gray { background:#888; }
-  .d-amber  { background:#BA7517; } .d-purple { background:#7F77DD; }
-  .d-teal   { background:#1D9E75; } .d-coral  { background:#D85A30; }
-  .d-green  { background:#639922; } .d-orange { background:#E07B20; }
-  .text { font-size: 12px; line-height: 1.5; flex: 1; }
-  .tag { display: inline-block; font-size: 9px; font-weight: 700; border-radius: 10px; padding: 1px 6px; margin-left: 4px; vertical-align: middle; white-space: nowrap; }
+  
+  /* COLORES */
+  .b-llegada { background:#E1F5EE; color:#0F6E56; }
+  .b-napoles { background:#FAEEDA; color:#854F0B; }
+  .b-coliseo { background:#EAF3DE; color:#3B6D11; }
+  .b-roma { background:#EEEDFE; color:#3C3489; }
+  .b-vaticano { background:#FAECE7; color:#993C1D; }
+  .b-pompeya { background:#FCEBEB; color:#A32D2D; }
+  .b-salida { background:#E6F1FB; color:#185FA5; }
+  .b-consejos { background:#FFF3DC; color:#854F0B; }
+  
+  .d-blue { background:#378ADD; } .d-gray { background:#888; }
+  .d-amber { background:#BA7517; } .d-purple { background:#7F77DD; }
+  .d-teal { background:#1D9E75; } .d-coral { background:#D85A30; }
+  .d-green { background:#639922; } .d-orange { background:#E07B20; }
+  
+  .tag { font-size: 8px; font-weight: 700; padding: 1px 5px; border-radius: 8px; margin-left: 4px; vertical-align: middle; }
   .t-rest { background:#FFF0D6; color:#854F0B; }
-  .t-des  { background:#E1F5EE; color:#0F6E56; }
+  .t-des { background:#E1F5EE; color:#0F6E56; }
   .t-comp { background:#F0EFFD; color:#3C3489; }
   .t-info { background:#E6F1FB; color:#185FA5; }
   .t-food { background:#FCEBEB; color:#A32D2D; }
 
-  .note { font-size: 11px; background:#F0EFFD; color:#3C3489; border-radius: 6px; padding: 7px 9px; margin-top: 8px; line-height: 1.6; }
-  .warn { font-size: 11px; background:#FFF3DC; color:#854F0B; border-radius: 6px; padding: 7px 9px; margin-top: 8px; line-height: 1.6; }
-  .fixed { font-size: 11px; background:#E8F7E8; color:#2D6A2D; border-radius: 6px; padding: 7px 9px; margin-top: 8px; line-height: 1.6; }
-
-  .sub-card { border: 1px solid #EBEBEB; border-radius: 8px; margin-top: 8px; overflow: hidden; }
-  .sub-header { display: flex; align-items: center; gap: 6px; padding: 8px 10px; cursor: pointer; background: #FAFAFA; -webkit-tap-highlight-color: transparent; user-select: none; }
-  .sub-icon { font-size: 13px; flex-shrink: 0; }
-  .sub-title { flex: 1; font-size: 11px; font-weight: 600; color: #444; }
-  .sub-chevron { font-size: 11px; color: #aaa; transition: transform .2s; }
-  .sub-chevron.open { transform: rotate(90deg); }
-  .sub-body { display: none; padding: 8px 10px 10px; background: #FAFAFA; border-top: 1px solid #EBEBEB; }
+  /* SUB-TARJETAS */
+  .sub-card { border: 1px solid #EBEBEB; border-radius: 8px; margin-top: 8px; }
+  .sub-header { display: flex; align-items: center; padding: 8px 10px; cursor: pointer; }
+  .sub-title { flex: 1; font-size: 11px; font-weight: 600; color: #444; margin-left: 6px; }
+  .sub-body { display: none; padding: 8px 10px; border-top: 1px solid #EBEBEB; }
   .sub-body.open { display: block; }
-  .sub-body li { font-size: 11px; color: #444; line-height: 1.8; margin-left: 14px; }
-  .sub-body .place { font-size: 11px; color: #333; line-height: 1.7; margin-bottom: 6px; padding-left: 8px; border-left: 2px solid #DEDCD5; }
-  .sub-body .place b { color: #1E1E1E; }
-  .sub-body .place .addr { font-size: 10px; color: #999; display: block; }
-  .sub-body .place .price { font-size: 10px; color: #0F6E56; font-weight: 600; display: block; }
-  .sub-body .place .warn-txt { font-size: 10px; color: #854F0B; display: block; }
+  .sub-body ul { margin-left: 20px; font-size: 11px; color: #444; }
 
-  .footer { font-size: 10px; color: #aaa; text-align: center; margin-top: 12px; padding-bottom: 16px; }
+  .footer { font-size: 10px; color: #aaa; text-align: center; margin-top: auto; padding: 20px 0; }
+  
+  .note, .warn, .fixed { font-size: 11px; border-radius: 6px; padding: 8px; margin-top: 10px; line-height: 1.5; }
+  .note { background:#F0EFFD; color:#3C3489; }
+  .warn { background:#FFF3DC; color:#854F0B; }
+  .fixed { background:#E8F7E8; color:#2D6A2D; }
 </style>
-</head>
-<body>
-<h1>🇮🇹 Roma 2026</h1>
-<p class="sub">12 – 19 agosto · 3 personas · Hotel Positano, Via Palestro 49</p>
-<hr>
-
-<!-- DÍA 1 -->
-<div class="card">
-  <div class="card-header" onclick="tog(this)">
-    <span class="badge b-llegada">LLEGADA</span>
-    <span class="card-title">Día 1 — Llegada</span>
-    <span class="card-date">12 ago · mié</span>
-    <span class="chevron">›</span>
-  </div>
-  <div class="card-body">
-    <div class="sec">Mañana</div>
-    <div class="item"><span class="time">08:20</span><span class="dot d-blue"></span><span class="text">Aterrizaje en Fiumicino (T1)</span></div>
-    <div class="item"><span class="time">~09:00</span><span class="dot d-blue"></span><span class="text">Leonardo Express → Roma Termini (~35 min)</span></div>
-    <div class="item"><span class="time">~10:00</span><span class="dot d-gray"></span><span class="text">Dejar maletas en Hotel Positano — pedir guardarlas hasta check-in</span></div>
-    <div class="item"><span class="time">10–13h</span><span class="dot d-teal"></span><span class="text">Libre — explorar la zona, desayuno cuando apetezca</span></div>
-    <div class="sec">Tarde</div>
-    <div class="item"><span class="time">13:00</span><span class="dot d-gray"></span><span class="text">Check-in Hotel Positano</span></div>
-    <div class="item"><span class="time">~14:00</span><span class="dot d-amber"></span><span class="text">Comida cerca del hotel — Taverna Pretoriana o Ristorante Julie's <span class="tag t-rest">RESTAURANTE</span></span></div>
-    <div class="item"><span class="time">15:30</span><span class="dot d-purple"></span><span class="text">Mercado Central (Via Giovanni Giolitti, 36) <span class="tag t-comp">COMPRAS</span></span></div>
-    <div class="item"><span class="time">16:30</span><span class="dot d-purple"></span><span class="text">Vicus Caprarius — Fontana di Trevi interiores <span class="tag t-info">RESERVADO 16:30</span></span></div>
-    <div class="item"><span class="time">17:30</span><span class="dot d-purple"></span><span class="text">Fontana di Trevi exterior (2€/persona)</span></div>
-    <div class="item"><span class="time">~17:45</span><span class="dot d-orange"></span><span class="text">Helado Rafaello — al lado de la Fontana di Trevi <span class="tag t-food">COMER</span></span></div>
-    <div class="item"><span class="time">~18:30</span><span class="dot d-orange"></span><span class="text">Espresso — La Casa del Caffé (Via degli Orfani, 84) · solo en barra o take away <span class="tag t-food">COMER</span></span></div>
-    <div class="item"><span class="time">~20:00</span><span class="dot d-amber"></span><span class="text">Cena cerca del hotel — Pizzeria Del Secolo (Via Palestro, 62) <span class="tag t-rest">RESTAURANTE</span></span></div>
-    <div class="note">💡 Noche temprana — al día siguiente tren a Nápoles a las 06:26.</div>
-  </div>
-</div>
-
 <!-- DÍA 2: Nápoles -->
 <div class="card">
   <div class="card-header" onclick="tog(this)">
