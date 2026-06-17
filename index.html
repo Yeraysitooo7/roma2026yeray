@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Roma 2026</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { width: 100%; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #F7F6F2; color: #1E1E1E; padding: 12px; width: 100%; }
+  h1 { font-size: 20px; font-weight: 700; margin-bottom: 2px; }
+  .sub { font-size: 12px; color: #666; margin-bottom: 12px; }
+  hr { border: none; border-top: 1px solid #DEDCD5; margin-bottom: 12px; }
+
+  .card { background: #fff; border: 1px solid #DEDCD5; border-radius: 12px; margin-bottom: 10px; overflow: hidden; }
+  .card-header { display: flex; align-items: center; gap: 8px; padding: 11px 14px; cursor: pointer; -webkit-tap-highlight-color: transparent; user-select: none; }
+  .badge { border-radius: 20px; padding: 3px 9px; font-size: 10px; font-weight: 700; white-space: nowrap; }
+  .b-llegada  { background:#E1F5EE; color:#0F6E56; }
+  .b-napoles  { background:#FAEEDA; color:#854F0B; }
+  .b-coliseo  { background:#EAF3DE; color:#3B6D11; }
+  .b-roma     { background:#EEEDFE; color:#3C3489; }
+  .b-vaticano { background:#FAECE7; color:#993C1D; }
+  .b-pompeya  { background:#FCEBEB; color:#A32D2D; }
+  .b-salida   { background:#E6F1FB; color:#185FA5; }
+  .b-consejos { background:#FFF3DC; color:#854F0B; }
+  .card-title { flex: 1; font-size: 13px; font-weight: 600; }
+  .card-date  { font-size: 11px; color: #888; white-space: nowrap; }
+  .chevron { font-size: 13px; color: #aaa; transition: transform .2s; margin-left: 4px; }
+  .chevron.open { transform: rotate(90deg); }
+
+  .card-body { display: none; padding: 0 14px 12px; }
+  .card-body.open { display: block; }
+
+  .sec { font-size: 9px; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: .07em; margin: 10px 0 5px; }
+  .item { display: flex; gap: 7px; align-items: flex-start; margin-bottom: 6px; }
+  .time { font-size: 11px; color: #aaa; min-width: 44px; padding-top: 2px; white-space: nowrap; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; margin-top: 4px; flex-shrink: 0; }
+  .d-blue   { background:#378ADD; } .d-gray { background:#888; }
+  .d-amber  { background:#BA7517; } .d-purple { background:#7F77DD; }
+  .d-teal   { background:#1D9E75; } .d-coral  { background:#D85A30; }
+  .d-green  { background:#639922; } .d-orange { background:#E07B20; }
+  .text { font-size: 12px; line-height: 1.5; flex: 1; }
+  .tag { display: inline-block; font-size: 9px; font-weight: 700; border-radius: 10px; padding: 1px 6px; margin-left: 4px; vertical-align: middle; white-space: nowrap; }
+  .t-rest { background:#FFF0D6; color:#854F0B; }
+  .t-des  { background:#E1F5EE; color:#0F6E56; }
+  .t-comp { background:#F0EFFD; color:#3C3489; }
+  .t-info { background:#E6F1FB; color:#185FA5; }
+  .t-food { background:#FCEBEB; color:#A32D2D; }
+  .t-caro { background:#F5F5F5; color:#888; }
+
+  .note { font-size: 11px; background:#F0EFFD; color:#3C3489; border-radius: 6px; padding: 7px 9px; margin-top: 8px; line-height: 1.6; }
+  .warn { font-size: 11px; background:#FFF3DC; color:#854F0B; border-radius: 6px; padding: 7px 9px; margin-top: 8px; line-height: 1.6; }
+  .fixed { font-size: 11px; background:#E8F7E8; color:#2D6A2D; border-radius: 6px; padding: 7px 9px; margin-top: 8px; line-height: 1.6; }
+
+  .sub-card { border: 1px solid #EBEBEB; border-radius: 8px; margin-top: 8px; overflow: hidden; }
+  .sub-header { display: flex; align-items: center; gap: 6px; padding: 8px 10px; cursor: pointer; background: #FAFAFA; -webkit-tap-highlight-color: transparent; user-select: none; }
+  .sub-icon { font-size: 13px; flex-shrink: 0; }
+  .sub-title { flex: 1; font-size: 11px; font-weight: 600; color: #444; }
+  .sub-chevron { font-size: 11px; color: #aaa; transition: transform .2s; }
+  .sub-chevron.open { transform: rotate(90deg); }
+  .sub-body { display: none; padding: 8px 10px 10px; background: #FAFAFA; border-top: 1px solid #EBEBEB; }
+  .sub-body.open { display: block; }
+  .sub-body li { font-size: 11px; color: #444; line-height: 1.8; margin-left: 14px; }
+  .sub-body p { font-size: 11px; color: #444; line-height: 1.7; margin-bottom: 4px; }
+  .sub-body .place { font-size: 11px; color: #333; line-height: 1.7; margin-bottom: 6px; padding-left: 4px; border-left: 2px solid #DEDCD5; }
+  .sub-body .place b { color: #1E1E1E; }
+  .sub-body .place .addr { font-size: 10px; color: #999; }
+  .sub-body .place .price { font-size: 10px; color: #0F6E56; font-weight: 600; }
+  .sub-body .place .warn-text { font-size: 10px; color: #854F0B; }
+
+  .footer { font-size: 10px; color: #aaa; text-align: center; margin-top: 12px; padding-bottom: 8px; }
+</style>
+</head>
+<body>
+<h1>🇮🇹 Roma 2026</h1>
+<p class="sub">12 – 19 agosto · 3 personas · Hotel Positano, Via Palestro 49</p>
+<hr>
+
+<!-- DÍA 1 -->
+<div class="card">
+  <div class="card-header" onclick="tog(this)">
+    <span class="badge b-llegada">LLEGADA</span>
+    <span class="card-title">Día 1 — Llegada</span>
+    <span class="card-date">12 ago · mié</span>
+    <span class="chevron">›</span>
+  </div>
+  <div class="card-body">
+    <div class="sec">Mañana</div>
+    <div class="item"><span class="time">08:20</span><span class="dot d-blue"></span><span class="text">Aterrizaje en Fiumicino (T1 llegadas)</span></div>
+    <div class="item"><span class="time">~09:00</span><span class="dot d-blue"></span><span class="text">Leonardo Express → Roma Termini (~35 min)</span></div>
+    <div class="item"><span class="time">~10:00</span><span class="dot d-gray"></span><span class="text">Dejar maletas en Hotel Positano — pedir guardarlas hasta check-in</span></div>
+    <div class="item"><span class="time">10–13h</span><span class="dot d-teal"></span><span class="text">Libre — explorar la zona, desayuno cuando apetezca</span></div>
+    <div class="sec">Tarde</div>
+    <div class="item"><span class="time">13:00</span><span class="dot d-gray"></span><span class="text">Check-in Hotel Positano</span></div>
+    <div class="item"><span class="time">~14:00</span><span class="dot d-amber"></span><span class="text">Comida cerca del hotel <span class="tag t-rest">RESTAURANTE</span></span></div>
+    <div class="item"><span class="time">15:30</span><span class="dot d-purple"></span><span class="text">Mercado Central (Via Giovanni Giolitti, 36) <span class="tag t-comp">COMPRAS</span></span></div>
+    <div class="item"><span class="time">16:30</span><span class="dot d-purple"></span><span class="text">Vicus Caprarius — Fontana di Trevi interiores <span class="tag t-info">RESERVADO 16:30</span></span></div>
+    <div class="item"><span class="time">17:30</span><span class="dot d-purple"></span><span class="text">Fontana di Trevi exterior (2€/persona) — justo al lado</span></div>
+    <div class="item"><span class="time">~17:45</span><span class="dot d-orange"></span><span class="text">Helado Rafaello — al lado de la Fontana di Trevi <span class="tag t-food">COMER</span></span></div>
+    <div class="item"><span class="time">~20:00</span><span class="dot d-amber"></span><span class="text">Cena cerca del hotel <span class="tag t-rest">RESTAURANTE</span></span></div>
+    <div class="note">💡 Noche temprana — al día siguiente tren a Nápoles a las 06:26.</div>
+  </div>
+</div>
+
+<!-- DÍA 2: Nápoles -->
+<div class="card">
+  <div class="card-header" onclick="tog(this)">
+    <span class="badge b-napoles">NÁPOLES</span>
+    <span class="card-title">Día 2 — Nápoles</span>
+    <span class="card-date">13 ago · jue</span>
+    <span class="chevron">›</span>
+  </div>
+  <div class="card-body">
+    <div class="sec">Mañana</div>
+    <div class="item"><span class="time">06:26</span><span class="dot d-blue"></span><span class="text">Tren desde Roma Termini (horarios pendientes de confirmar)</span></div>
+    <div class="item"><span class="time">~08:30</span><span class="dot d-blue"></span><span class="text">Llegada a Nápoles</span></div>
+    <div class="item"><span class="time">~09:00</span><span class="dot d-amber"></span><span class="text">Desayuno — Luciano Manzzone (Piazza Pignasecca, 20) · ~5€/persona <span class="tag t-des">DESAYUNO</span></span></div>
+    <div class="item"><span class="time">~10:00</span><span class="dot d-teal"></span><span class="text">Paseo por el centro histórico</span></div>
+    <div class="item"><span class="time">~11:00</span><span class="dot d-orange"></span><span class="text">Pizza frita y sfogliatella — probar por el centro <span class="tag t-food">COMER</span></span></div>
+    <div class="item"><span class="time">~12:00</span><span class="dot d-amber"></span><span class="text">Pizza portafoglio — Pizzeria Friggitoria del Purgatorio <span class="tag t-rest">RESTAURANTE</span></span></div>
+    <div class="sec">Mediodía</div>
+    <div class="item"><span class="time">~13:30</span><span class="dot d-amber"></span><span class="text">Comida — Diego Vitagliano Pizzeria (Santa Lucia) <span class="tag t-rest">RESTAURANTE</span></span></div>
+    <div class="sec">Tarde</div>
+    <div class="item"><span class="time">—</span><span class="dot d-teal"></span><span class="text">Mural de Maradona (Quartieri Spagnoli)</span></div>
+    <div class="item"><span class="time">—</span><span class="dot d-gray"></span><span class="text">Más sitios por confirmar</span></div>
+    <div class="item"><span class="time">—</span><span class="dot d-blue"></span><span class="text">Tren de vuelta a Roma (horario pendiente)</span></div>
+    <div class="warn">⚠️ Trenes pendientes de confirmar en Trenitalia.com. Cuidado con las pertenencias en Nápoles.</div>
+  </div>
+</div>
+
+<!-- DÍA 3: Tranquilo -->
+<div class="card">
+  <div class="card-header" onclick="tog(this)">
+    <span class="badge b-roma">ROMA</span>
+    <span class="card-title">Día 3 — Día tranquilo</span>
+    <span class="card-date">14 ago · vie</span>
+    <span class="chevron">›</span>
+  </div>
+  <div class="card-body">
+    <div class="sec">Mañana / Tarde</div>
+    <div class="item"><span class="time">~10:00</span><span class="dot d-teal"></span><span class="text">Levantarse sin prisas — recuperar Nápoles</span></div>
+    <div class="item"><span class="time">~11:00</span><span class="dot d-purple"></span><span class="text">Tienda LEGO (Via Tomacelli, 141) <span class="tag t-comp">COMPRAS</span></span></div>
+    <div class="item"><span class="time">~11:30</span><span class="dot d-orange"></span><span class="text">Espresso en barra — La Casa del Caffé (Via degli Orfani, 84) · Take away <span class="tag t-food">COMER</span></span></div>
+    <div class="item"><span class="time">~13:00</span><span class="dot d-amber"></span><span class="text">Comida — cerca de Via Tomacelli <span class="tag t-rest">RESTAURANTE</span></span></div>
+    <div class="item"><span class="time">~15:00</span><span class="dot d-teal"></span><span class="text">Paseo por la zona del centro</span></div>
+    <div class="item"><span class="time">~16:00</span><span class="dot d-purple"></span><span class="text">Escaleras Españolas (Piazza di Spagna — Metro Línea A)</span></div>
+    <div class="sec">Noche</div>
+    <div class="item"><span class="time">~20:00</span><span class="dot d-amber"></span><span class="text">Cena — Pizzeria Del Secolo (Via Palestro, 62) · pizzas cuadradas <span class="tag t-rest">RESTAURANTE</span></span></div>
+  </div>
+</div>
+
+<!-- DÍA 4: Ferragosto -->
+<div class="card">
+  <div class="card-header" onclick="tog(this)">
+    <span class="badge b-roma">ROMA</span>
+    <span class="card-title">Día 4 — Centro histórico (Ferragosto)</span>
+    <span class="card-date">15 ago · sáb ⚠️</span>
+    <span class="chevron">›</span>
+  </div>
+  <div class="card-body">
+    <div class="sec">Mañana</div>
+    <div class="item"><span class="time">09:00</span><span class="dot d-amber"></span><span class="text">Desayuno — L'Antico Forno di Trevi · croissant de pistacho <span class="tag t-des">DESAYUNO</span></span></div>
+    <div class="item"><span class="time">10:00</span><span class="dot d-purple"></span><span class="text">Iglesia de San Ignacio de Loyola</span></div>
+    <div class="item"><span class="time">11:00</span><span class="dot d-purple"></span><span class="text">Basílica de Santa María sopra Minerva</span></div>
+    <div class="item"><span class="time">12:00</span><span class="dot d-purple"></span><span class="text">Piazza Navona + subterráneos (Estadio de Domiciano)</span></div>
+    <div class="item"><span class="time">13:00</span><span class="dot d-purple"></span><span class="text">Tiendas souvenirs baratos cerca de Piazza Navona <span class="tag t-comp">COMPRAS</span></span></div>
+    <div class="sec">Mediodía</div>
+    <div class="item"><span class="time">14:00</span><span class="dot d-amber"></span><span class="text">Comida — La Tavernetta 29 da Toni <span class="tag t-rest">RESTAURANTE</span></span></div>
+    <div class="sec">Tarde</div>
+    <div class="item"><span class="time">15:30</span><span class="dot d-purple"></span><span class="text">Palazzo Altemps (~10 min a pie desde La Tavernetta)</span></div>
+    <div class="item"><span class="time">17:00</span><span class="dot d-teal"></span><span class="text">Trastevere — ambiente italiano</span></div>
+    <div class="item"><span class="time">17:30</span><span class="dot d-orange"></span><span class="text">Aperol Spritz — Bar San Calisto (Piazza di S. Calisto, 3) · 4€ <span class="tag t-food">COMER</span></span></div>
+    <div class="item"><span class="time">~18:30</span><span class="dot d-orange"></span><span class="text">Suppli en Trastevere · probar por la zona <span class="tag t-food">COMER</span></span></div>
+    <div class="item"><span class="time">20:00</span><span class="dot d-amber"></span><span class="text">Cena — La Taverna Madonna Dei Monti 16 · carbonara ~10€ <span class="tag t-rest">RESTAURANTE</span></span></div>
+    <div class="warn">⚠️ Ferragosto — el Panteón cierra. Palazzo Altemps e iglesias abren. Verificar horarios antes de salir.</div>
+  </div>
+</div>
+
+<!-- DÍA 5: Coliseo -->
+<div class="card">
+  <div class="card-header" onclick="tog(this)">
+    <span class="badge b-coliseo">COLISEO</span>
+    <span class="card-title">Día 5 — Coliseo y alrededores</span>
+    <span class="card-date">16 ago · dom</span>
+    <span class="chevron">›</span>
+  </div>
+  <div class="card-body">
+    <div class="sec">Mañana</div>
+    <div class="item"><span class="time">08:30</span><span class="dot d-green"></span><span class="text">Coliseo — subterráneos + arena + Foro Romano + Monte Palatino</span></div>
+    <div class="item"><span class="time">—</span><span class="dot d-teal"></span><span class="text">📸 Mejor foto del Coliseo: Viale del Monte Oppio, 00184</span></div>
+    <div class="item"><span class="time">—</span><span class="dot d-teal"></span><span class="text">📸 Foro Romano gratis desde Piazza del Campidoglio (lado derecho)</span></div>
+    <div class="sec">Mediodía</div>
+    <div class="item"><span class="time">13:30</span><span class="dot d-amber"></span><span class="text">Comida — Trattoria Luzzi (Via Celimontana, 1) <span class="tag t-rest">RESTAURANTE</span></span></div>
+    <div class="sec">Tarde</div>
+    <div class="item"><span class="time">15:00</span><span class="dot d-purple"></span><span class="text">Panteón de Roma (~15 min del Coliseo)</span></div>
+    <div class="item"><span class="time">16:00</span><span class="dot d-orange"></span><span class="text">Tiramisú — Pompi (Via Santa Maria in Via, 17) · ~5€ <span class="tag t-food">COMER</span></span></div>
+    <div class="item"><span class="time">16:30</span><span class="dot d-purple"></span><span class="text">Palazzo Littorio (Via dei Fori Imperiali)</span></div>
+    <div class="item"><span class="time">17:00</span><span class="dot d-purple"></span><span class="text">Monumento a Víctor Manuel II</span></div>
+    <div class="item"><span class="time">18:30</span><span class="dot d-purple"></span><span class="text">Basílica de Santa María la Mayor</span></div>
+    <div class="warn">⚠️ Entradas Coliseo abren el 16 de julio a las 9:00. Domingo en agosto = mucha gente, entrar a las 8:30 en punto.</div>
+  </div>
+</div>
+
+<!-- DÍA 6: Vaticano -->
+<div class="card">
+  <div class="card-header" onclick="tog(this)">
+    <span class="badge b-vaticano">VATICANO</span>
+    <span class="card-title">Día 6 — Vaticano</span>
+    <span class="card-date">17 ago · lun</span>
+    <span class="chevron">›</span>
+  </div>
+  <div class="card-body">
+    <div class="sec">Mañana</div>
+    <div class="item"><span class="time">09:00</span><span class="dot d-coral"></span><span class="text">Plaza de San Pedro (Via di Porta Angelica, 83) — 1er control seguridad</span></div>
+    <div class="item"><span class="time">10:00</span><span class="dot d-coral"></span><span class="text">Basílica de San Pedro — 2º control. Gratuita. Audioguía opcional 7€ (evita la cola principal)</span></div>
+    <div class="item"><span class="time">—</span><span class="dot d-coral"></span><span class="text">Cúpula: entrada de pago, cierra a las 17:00. Catacumbas: también cierran a las 17:00. ⚠️ Miércoles la Basílica abre a la 1pm (hoy es lunes, sin problema)</span></div>
+
+    <div class="sub-card">
+      <div class="sub-header" onclick="subtog(this)">
+        <span class="sub-icon">🗺️</span>
+        <span class="sub-title">Recorrido Museos Vaticanos (en orden)</span>
+        <span class="sub-chevron">›</span>
+      </div>
+      <div class="sub-body">
+        <li>1. Pinacoteca Vaticana</li>
+        <li>2. Galería de las Carrozas</li>
+        <li>3. Museo Egipcio</li>
+        <li>4. Museo Pío Clementino</li>
+        <li>5. Zona de los Tapices y Mapas</li>
+        <li>6. Las Estancias de Rafael</li>
+        <li>7. Capilla Sixtina — ⚠️ Prohibido hacer fotos o vídeos</li>
+      </div>
+    </div>
+
+    <div class="sub-card">
+      <div class="sub-header" onclick="subtog(this)">
+        <span class="sub-icon">👗</span>
+        <span class="sub-title">Código de vestimenta — Vaticano</span>
+        <span class="sub-chevron">›</span>
+      </div>
+      <div class="sub-body">
+        <ul>
+          <li>Sin tirantes ni hombros al descubierto</li>
+          <li>Sin pantalones cortos ni faldas por encima de la rodilla</li>
+          <li>Sin ropa transparente ni muy ajustada</li>
+          <li>Llevar un pañuelo por si acaso para cubrirse</li>
+          <li>Si no cumples el código te pueden denegar la entrada</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sec">Mediodía</div>
+    <div class="item"><span class="time">12:30</span><span class="dot d-amber"></span><span class="text">Comida — EGG PASTA (Vicolo del Farinone, 25/A) · muy barato, al lado del Vaticano <span class="tag t-rest">RESTAURANTE</span></span></div>
+    <div class="item"><span class="time">—</span><span class="dot d-orange"></span><span class="text">Trapizzino + suppli — Be.Re. + Trapizzino (Piazza del Risorgimento, 7/A) · 5€ <span class="tag t-food">COMER</span></span></div>
+    <div class="sec">Tarde</div>
+    <div class="item"><span class="time">14:30</span><span class="dot d-coral"></span><span class="text">Andar ~15 min hasta Museos Vaticanos (Viale Vaticano, 100) — 3er control</span></div>
+    <div class="item"><span class="time">17:00</span><span class="dot d-coral"></span><span class="text">Museos Vaticanos + Capilla Sixtina <span class="tag t-info">RESERVADO 17:00</span></span></div>
+    <div class="item"><span class="time">~19:30</span><span class="dot d-coral"></span><span class="text">Salida por Viale Vaticano</span></div>
+    <div class="note">💡 Son 3 controles de seguridad distintos a lo largo del día. Llevar DNI. Tickets: tickets.museivaticani.va — 65€ total (pendiente comprar).</div>
+  </div>
+</div>
+
+<!-- DÍA 7: Pompeya -->
+<div class="card">
+  <div class="card-header" onclick="tog(this)">
+    <span class="badge b-pompeya">POMPEYA</span>
+    <span class="card-title">Día 7 — Pompeya + Costa Amalfitana + Sorrento</span>
+    <span class="card-date">18 ago · mar</span>
+    <span class="chevron">›</span>
+  </div>
+  <div class="card-body">
+    <div class="sec">Mañana</div>
+    <div class="item"><span class="time">07:35</span><span class="dot d-blue"></span><span class="text">Punto de encuentro — Piazza del Popolo (fuente leones + obelisco). Metro Flaminio Línea A. Guía de azul, cartel City Wonders.</span></div>
+    <div class="item"><span class="time">07:55</span><span class="dot d-blue"></span><span class="text">Salida en autocar con AC y WiFi</span></div>
+    <div class="item"><span class="time">~10:00</span><span class="dot d-blue"></span><span class="text">Pausa en Cassino (20 min)</span></div>
+    <div class="item"><span class="time">~11:00</span><span class="dot d-coral"></span><span class="text">Pompeya — tour guiado arqueólogo 1,5h + 30 min libre</span></div>
+    <div class="sec">Tarde</div>
+    <div class="item"><span class="time">~13:00</span><span class="dot d-amber"></span><span class="text">Tiempo libre para comer en Pompeya (no incluido) <span class="tag t-rest">RESTAURANTE</span></span></div>
+    <div class="item"><span class="time">~14:30</span><span class="dot d-teal"></span><span class="text">Costa Amalfitana — recorrido panorámico</span></div>
+    <div class="item"><span class="time">~16:00</span><span class="dot d-teal"></span><span class="text">Sorrento — 2h libre + degustación limoncello incluida</span></div>
+    <div class="item"><span class="time">~19:00</span><span class="dot d-blue"></span><span class="text">Vuelta a Roma — llegada Piazza del Popolo</span></div>
+
+    <div class="sub-card">
+      <div class="sub-header" onclick="subtog(this)">
+        <span class="sub-icon">🌋</span>
+        <span class="sub-title">Consejos para Pompeya</span>
+        <span class="sub-chevron">›</span>
+      </div>
+      <div class="sub-body">
+        <ul>
+          <li>Calzado cómodo obligatorio — pavimento muy irregular</li>
+          <li>Agua abundante — calor extremo en agosto</li>
+          <li>Gorra y crema solar — sin sombra en el recinto</li>
+          <li>DNI de Yeray obligatorio para entrar</li>
+          <li>Sin maletas grandes — solo mochila pequeña</li>
+          <li>Puede haber retrasos por controles de seguridad</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sub-card">
+      <div class="sub-header" onclick="subtog(this)">
+        <span class="sub-icon">🍋</span>
+        <span class="sub-title">Limoncello en Sorrento</span>
+        <span class="sub-chevron">›</span>
+      </div>
+      <div class="sub-body">
+        <ul>
+          <li>La fábrica del tour tiene precios inflados — no compres ahí</li>
+          <li>Compra en tiendas del centro: Corso Italia o Via San Cesareo</li>
+          <li>La degustación del tour es gratuita — aprovéchala para probar</li>
+          <li>Busca botellas de cerámica típica sorrentina como recuerdo</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="fixed">✅ CONFIRMADO — 257,40€ · City Wonders · Cancelación gratuita hasta 17 ago 7:55</div>
+  </div>
+</div>
+
+<!-- DÍA 8: Salida -->
+<div class="card">
+  <div class="card-header" onclick="tog(this)">
+    <span class="badge b-salida">SALIDA</span>
+    <span class="card-title">Día 8 — Salida</span>
+    <span class="card-date">19 ago · mié · vuelo 20:30</span>
+    <span class="chevron">›</span>
+  </div>
+  <div class="card-body">
+    <div class="sec">Mañana</div>
+    <div class="item"><span class="time">09:00</span><span class="dot d-gray"></span><span class="text">Check-out hotel (hasta las 11:00) — dejar maletas en consigna</span></div>
+    <div class="item"><span class="time">10:00</span><span class="dot d-amber"></span><span class="text">Último desayuno <span class="tag t-des">DESAYUNO</span></span></div>
+    <div class="item"><span class="time">11:00</span><span class="dot d-teal"></span><span class="text">Paseo libre por la zona</span></div>
+    <div class="sec">Tarde</div>
+    <div class="item"><span class="time">13:00</span><span class="dot d-amber"></span><span class="text">Última comida en Roma <span class="tag t-rest">RESTAURANTE</span></span></div>
+    <div class="item"><span class="time">15:30</span><span class="dot d-gray"></span><span class="text">Recoger maletas en el hotel</span></div>
+    <div class="item"><span class="time">16:00</span><span class="dot d-blue"></span><span class="text">Leonardo Express desde Termini → Fiumicino (~35 min) · T2 salidas</span></div>
+    <div class="item"><span class="time">~16:40</span><span class="dot d-blue"></span><span class="text">Llegada al aeropuerto — facturación y seguridad</span></div>
+    <div class="item"><span class="time">20:30</span><span class="dot d-blue"></span><span class="text">Vuelo de vuelta a España ✈️</span></div>
+    <div class="note">💡 Check-out hasta las 11:00. Estar en el aeropuerto a las 17:00 mínimo. Fiumicino tiene 3 terminales — T2 para salidas Ryanair.</div>
+  </div>
+</div>
+
+<!-- CONSEJOS Y FACILIDADES -->
+<div class="card">
+  <div class="card-header" onclick="tog(this)">
+    <span class="badge b-consejos">CONSEJOS</span>
+    <span class="card-title">Consejos y facilidades</span>
+    <span class="card-date">General</span>
+    <span class="chevron">›</span>
+  </div>
+  <div class="card-body">
+
+    <div class="sub-card">
+      <div class="sub-header" onclick="subtog(this)">
+        <span class="sub-icon">🚇</span>
+        <span class="sub-title">Transporte público Roma</span>
+        <span class="sub-chevron">›</span>
+      </div>
+      <div class="sub-body">
+        <ul>
+          <li><b>Línea A</b> — Vaticano, Plaza de España, Termini</li>
+          <li><b>Línea B</b> — Coliseo, Termini</li>
+          <li><b>Línea C</b> — Zonas periféricas</li>
+          <li><b>Autobús</b> — llega donde no llega el metro. Google Maps funciona muy bien.</li>
+          <li><b>Tranvía</b> — menos afectado por el tráfico, buena alternativa al bus</li>
+          <li>En el centro solo andar — transporte solo para entrar y salir</li>
+        </ul>
+        <br>
+        <ul>
+          <li><b>BIT 100 min</b> — 1,50€</li>
+          <li><b>Roma 24h</b> — 7€</li>
+          <li><b>Roma 48h</b> — 12,50€</li>
+          <li><b>Roma 72h</b> — 18€</li>
+          <li><b>CIS 7 días</b> — consultar precio</li>
+          <li>Todos válidos para metro, bus y tranvía</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sub-card">
+      <div class="sub-header" onclick="subtog(this)">
+        <span class="sub-icon">🚆</span>
+        <span class="sub-title">Trenes Trenitalia</span>
+        <span class="sub-chevron">›</span>
+      </div>
+      <div class="sub-body">
+        <ul>
+          <li>Maquinas rojas en estaciones = compra de billetes</li>
+          <li>Maquinas verdes = validadoras (para tickets en papel)</li>
+          <li>Si compras online → NO hay que validar, llevas QR en móvil o PDF</li>
+          <li>Solo validan los tickets comprados en papel en taquilla o máquina</li>
+          <li>App recomendada: Trenitalia</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sub-card">
+      <div class="sub-header" onclick="subtog(this)">
+        <span class="sub-icon">📱</span>
+        <span class="sub-title">Apps recomendadas</span>
+        <span class="sub-chevron">›</span>
+      </div>
+      <div class="sub-body">
+        <ul>
+          <li><b>Trenitalia</b> — trenes</li>
+          <li><b>The Fork</b> — reservas en restaurantes</li>
+          <li><b>Google Maps</b> — navegación y transporte público</li>
+          <li><b>FreeNow</b> — taxis</li>
+          <li><b>Rome2rio</b> — rutas de transporte</li>
+          <li><b>Toilet Finder</b> — baños públicos (ubicación, calificación, si es de pago)</li>
+          <li><b>App fuentes Roma</b> — ya instalada</li>
+          <li><b>GetYourGuide</b> — tickets excursiones</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sub-card">
+      <div class="sub-header" onclick="subtog(this)">
+        <span class="sub-icon">🚽</span>
+        <span class="sub-title">Dónde encontrar baños</span>
+        <span class="sub-chevron">›</span>
+      </div>
+      <div class="sub-body">
+        <ul>
+          <li>Estaciones de tren — de pago</li>
+          <li>Bares — consumiendo algo</li>
+          <li>Baños públicos — usar app Toilet Finder</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sub-card">
+      <div class="sub-header" onclick="subtog(this)">
+        <span class="sub-icon">✈️</span>
+        <span class="sub-title">Fiumicino — aeropuerto</span>
+        <span class="sub-chevron">›</span>
+      </div>
+      <div class="sub-body">
+        <ul>
+          <li>Aeropuerto grande — fácil perderse</li>
+          <li>3 terminales</li>
+          <li>Gran duty free</li>
+          <li>T3 piso 2 — restaurantes</li>
+          <li>Llegada: T1 · Salida: T2 (Ryanair)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sub-card">
+      <div class="sub-header" onclick="subtog(this)">
+        <span class="sub-icon">🍝</span>
+        <span class="sub-title">Comidas y sitios recomendados</span>
+        <span class="sub-chevron">›</span>
+      </div>
+      <div class="sub-body">
+        <div class="place"><b>Pastificio Guerra</b> — 2 pastas por 5€ take away<br><span class="addr">V. della Croce, 8</span></div>
+        <div class="place"><b>Alice Pizza</b> — pizza al taglio, varios locales por Roma<br><span class="addr">Buscar local más cercano cada día</span></div>
+        <div class="place"><b>Al Antico Vinaio</b> — focaccias<br><span class="addr">Ubicación guardada</span></div>
+        <div class="place"><b>Limón·é</b> — helado de limón<br><span class="addr">Via in Arcione, 91 o Via Santa Maria in Via, 14</span></div>
+        <div class="place"><b>Giolitti / Venchiu</b> — helados<br><span class="addr">Varias ubicaciones por Roma</span></div>
+        <div class="place"><b>Pompi</b> — tiramisú ~5€<br><span class="addr">Varias ubicaciones. Recomendada: Via Santa Maria in Via, 17</span></div>
+        <div class="place"><b>Amorino Gelato</b> — helados, take away<br><span class="addr">Via del Lavatore, 94/A</span></div>
+        <div class="place"><b>Antico Forno Roscioli</b> — panadería/forno<br><span class="addr">Via dei Chiavari, 34</span><br><span class="price">Precios asequibles</span></div>
+        <div class="place"><b>Pizza e Mozzarella</b> — precios muy buenos<br><span class="addr">Via del Piè di Marmo, 32</span></div>
+        <div class="place"><b>Mater est. 2022</b> — pastas ~10€<br><span class="addr">Via della Maddalena, 46-49</span></div>
+        <div class="place"><b>Con Mollica o Senza?</b> — bocadillos<br><span class="addr">Piazza di Pietra, 62</span></div>
+        <div class="place"><b>Caffé Teichner</b> — café especial y famoso<br><span class="addr">Piazza di S. Lorenzo in Lucina, 15</span><br><span class="warn-text">Precios altos — valorar si merece la pena</span></div>
+        <div class="place"><b>Mariuccia</b> — pizza ~11€ margarita<br><span class="addr">P.za della Cancelleria, 92</span><br><span class="warn-text">No priorizar — bebida muy cara (agua 33€)</span></div>
+        <div class="place"><b>Nannarella</b> — tiramisú<br><span class="addr">Piazza di S. Calisto, 7/a</span><br><span class="warn-text">No priorizar — muy caro</span></div>
+        <div class="place"><b>Restaurant Ai Spaghettari</b> — mejor carbonara de Roma<br><span class="addr">Piazza di S. Cosimato, 58</span><br><span class="warn-text">No priorizar — precios elevados</span></div>
+        <div class="place"><b>Cantina dei Papi</b> — muy barato en general<br><span class="addr">Via della Scala, 71 o Via della Panetteria, 42A</span></div>
+        <div class="place"><b>Tiramisu Merisu</b> — ~5€<br><span class="addr">Via di S. Francesco a Ripa, 29</span></div>
+        <div class="place"><b>Suppli Roma</b><br><span class="addr">Via di S. Francesco a Ripa, 137</span></div>
+        <div class="place"><b>Pastaciutta</b> — muy barato<br><span class="addr">Largo Pietro di Brazza', 27</span></div>
+        <div class="place"><b>Mr 100 Tiramisú / McDonald's tiramisú</b> — 2,90€</div>
+      </div>
+    </div>
+
+    <div class="sub-card">
+      <div class="sub-header" onclick="subtog(this)">
+        <span class="sub-icon">💡</span>
+        <span class="sub-title">Tips generales</span>
+        <span class="sub-chevron">›</span>
+      </div>
+      <div class="sub-body">
+        <ul>
+          <li>Horario comida: 12:30–14:30 · Cena: desde las 19:30</li>
+          <li>Diferencia osteria vs trattoria: osteria más informal y con más vino; trattoria más formal</li>
+          <li>En bares: si consumes en barra es más barato que en mesa (puede subir 1€+ por producto)</li>
+          <li>La Casa del Caffé — solo consumir en barra o take away</li>
+          <li>Granizado / limonada congelada local — buscar por la ciudad</li>
+          <li>Fuentes de agua potable por toda Roma — usar app de fuentes</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<p class="footer">Roma 2026 · Documento provisional</p>
+
+<script>
+function tog(header) {
+  const body = header.nextElementSibling;
+  const ch = header.querySelector('.chevron');
+  const open = body.classList.toggle('open');
+  ch.classList.toggle('open', open);
+}
+function subtog(header) {
+  const body = header.nextElementSibling;
+  const ch = header.querySelector('.sub-chevron');
+  const open = body.classList.toggle('open');
+  ch.classList.toggle('open', open);
+}
+</script>
+</body>
+</html>
